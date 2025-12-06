@@ -355,6 +355,7 @@
             <button class="nav-btn" onclick="showPage('gamemodes')">🎮 Spielmodi</button>
             <button class="nav-btn" onclick="showPage('team')">👥 Team</button>
             <button class="nav-btn" onclick="showPage('about')">📖 Über uns</button>
+            <button class="nav-btn" onclick="showPage('contact')">✉️ Kontakt</button>
             <button class="nav-btn" onclick="showPage('discord')">💬 Discord</button>
         </div>
     </nav>
@@ -398,11 +399,11 @@
                 <h2>🎮 Spielmodi</h2>
                 <div class="gamemodes">
                     <div class="gamemode-card">
-                        <h3>SMP</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. Oder werde der Reicheste auf dem Server!</p>
+                        <h3>Survival</h3>
+                        <p>Überlebe in einer offenen Welt mit Freunden. Baue, erkunde und meistere Herausforderungen!</p>
                     </div>
                     <div class="gamemode-card">
-                        <h3>Craftattack</h3>
+                        <h3>Craftattack/SMP</h3>
                         <p>Gemeinsames Bauen und Erleben in unserer Survival Multiplayer Welt. Kreativität trifft Community!</p>
                     </div>
                     <div class="gamemode-card">
@@ -487,6 +488,66 @@
             </div>
         </div>
 
+        <!-- CONTACT PAGE -->
+        <div id="contact" class="page">
+            <div class="section">
+                <h2>✉️ Kontaktieren Sie uns</h2>
+                <p style="font-size: 1.2em; text-align: center; line-height: 1.8; color: #ccc; margin-bottom: 40px;">
+                    Haben Sie Fragen, Probleme oder Anregungen? Unser Support-Team ist für Sie da!
+                </p>
+                
+                <div class="gamemode-card" style="max-width: 700px; margin: 0 auto 40px;">
+                    <h3>📧 Support-Email</h3>
+                    <p style="font-size: 1.3em; color: #4169e1; margin: 20px 0;">
+                        <a href="mailto:support@hopemc.de" style="color: #4169e1; text-decoration: none;">
+                            support@hopemc.de
+                        </a>
+                    </p>
+                    <button class="btn" onclick="copyEmail()" style="margin-top: 15px;">
+                        📋 Email kopieren
+                    </button>
+                </div>
+
+                <div class="add-member-form" style="max-width: 800px; margin: 0 auto;">
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">📝 Kontaktformular</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label>Dein Name:</label>
+                            <input type="text" id="contactName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Deine Email:</label>
+                            <input type="email" id="contactEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Betreff:</label>
+                            <input type="text" id="contactSubject" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nachricht:</label>
+                            <textarea id="contactMessage" rows="6" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Nachricht senden</button>
+                    </form>
+                </div>
+
+                <div class="gamemodes" style="margin-top: 50px;">
+                    <div class="gamemode-card">
+                        <h3>⏱️ Antwortzeit</h3>
+                        <p>Wir antworten in der Regel innerhalb von 24 Stunden auf alle Anfragen.</p>
+                    </div>
+                    <div class="gamemode-card">
+                        <h3>🔧 Technischer Support</h3>
+                        <p>Probleme beim Verbinden? Bugs gefunden? Wir helfen dir schnell weiter!</p>
+                    </div>
+                    <div class="gamemode-card">
+                        <h3>💡 Vorschläge</h3>
+                        <p>Deine Ideen sind uns wichtig! Teile deine Vorschläge für neue Features mit uns.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- DISCORD PAGE -->
         <div id="discord" class="page">
             <div class="section" style="text-align: center;">
@@ -538,10 +599,30 @@
             alert('Server-IP wurde kopiert!');
         }
 
-        // Discord öffnen
-        function openDiscord() {
-            window.open('https://discord.gg/twUBkvHuhe', '_blank');
+        // Email kopieren
+        function copyEmail() {
+            navigator.clipboard.writeText('support@hopemc.de');
+            alert('Email-Adresse wurde kopiert!');
         }
+
+        // Kontaktformular
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            // Email-Link erstellen
+            const mailtoLink = `mailto:support@hopemc.de?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Von: ' + name + ' (' + email + ')\n\n' + message)}`;
+            
+            // Email-Client öffnen
+            window.location.href = mailtoLink;
+            
+            alert('Dein Email-Programm wird geöffnet. Bitte sende die Email ab!');
+            this.reset();
+        });
 
         // Seiten-Navigation
         function showPage(pageName) {
