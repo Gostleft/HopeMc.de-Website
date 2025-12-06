@@ -559,13 +559,13 @@
         }
 
         // Admin-Passwort (ÄNDERE DIESES PASSWORT!)
-        const ADMIN_PASSWORD = "HopeMc2024";
+        const ADMIN_PASSWORD = "2AKM1kwd";
         let isAdminLoggedIn = false;
 
         // Admin-Login prüfen
         function checkAdminPassword() {
             const password = document.getElementById('adminPassword').value;
-            if (password === 2AKM1kwd) {
+            if (password === ADMIN_PASSWORD) {
                 isAdminLoggedIn = true;
                 document.getElementById('adminLogin').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
