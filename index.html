@@ -399,7 +399,7 @@
                 <div class="gamemodes">
                     <div class="gamemode-card">
                         <h3>SMP</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. und werde der Reichste auf dem Server!</p>
+                        <p>Überlebe in einer offenen Welt mit Freunden. Oder werde der Reicheste auf dem Server!</p>
                     </div>
                     <div class="gamemode-card">
                         <h3>Craftattack</h3>
@@ -424,16 +424,16 @@
                     <p style="color: #ccc; margin-bottom: 15px;">Nur für Administratoren: Gib das Passwort ein, um Teammitglieder zu verwalten.</p>
                     <div class="form-group">
                         <label>Passwort:</label>
-                        <input type="password" id="adminPassword" placeholder="Admin-Passwort eingeben">
+                        <input type="password" id="adminPassword" placeholder="Admin-Passwort eingeben" onkeypress="if(event.key==='Enter') checkAdminPassword()">
                     </div>
-                    <button class="btn" onclick="checkAdminPassword(2AKM1kwd)">Einloggen</button>
+                    <button type="button" class="btn" onclick="checkAdminPassword()">Einloggen</button>
                 </div>
             
                 <!-- Teammitglied hinzufügen (versteckt bis Login) -->
                 <div id="adminPanel" class="add-member-form" style="display: none;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h3 style="color: #8a2be2; margin: 0;">✅ Eingeloggt - Teammitglied hinzufügen</h3>
-                        <button class="btn" onclick="logoutAdmin()" style="padding: 8px 20px; font-size: 0.9em;">Ausloggen</button>
+                        <button type="button" class="btn" onclick="logoutAdmin()" style="padding: 8px 20px; font-size: 0.9em;">Ausloggen</button>
                     </div>
                     <form id="teamForm">
                         <div class="form-group">
