@@ -398,11 +398,11 @@
                 <h2>🎮 Spielmodi</h2>
                 <div class="gamemodes">
                     <div class="gamemode-card">
-                        <h3>Survival</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. Baue, erkunde und meistere Herausforderungen!</p>
+                        <h3>SMP</h3>
+                        <p>Überlebe in einer offenen Welt mit Freunden. und werde der Reichste auf dem Server!</p>
                     </div>
                     <div class="gamemode-card">
-                        <h3>Craftattack/SMP</h3>
+                        <h3>Craftattack</h3>
                         <p>Gemeinsames Bauen und Erleben in unserer Survival Multiplayer Welt. Kreativität trifft Community!</p>
                     </div>
                     <div class="gamemode-card">
@@ -417,9 +417,24 @@
         <div id="team" class="page">
             <div class="section">
                 <h2>👥 Unser Team</h2>
+
+                <!-- Login-Bereich für Admin -->
+                <div id="adminLogin" class="add-member-form">
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">🔒 Admin-Login</h3>
+                    <p style="color: #ccc; margin-bottom: 15px;">Nur für Administratoren: Gib das Passwort ein, um Teammitglieder zu verwalten.</p>
+                    <div class="form-group">
+                        <label>Passwort:2AKM1kwd</label>
+                        <input type="password" id="adminPassword" placeholder="Admin-Passwort eingeben">
+                    </div>
+                    <button class="btn" onclick="checkAdminPassword(2AKM1kwd)">Einloggen</button>
+                </div>
             
-                <div class="add-member-form">
-                    <h3 style="color: #8a2be2; margin-bottom: 20px;">Teammitglied hinzufügen</h3>
+                <!-- Teammitglied hinzufügen (versteckt bis Login) -->
+                <div id="adminPanel" class="add-member-form" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="color: #8a2be2; margin: 0;">✅ Eingeloggt - Teammitglied hinzufügen</h3>
+                        <button class="btn" onclick="logoutAdmin()" style="padding: 8px 20px; font-size: 0.9em;">Ausloggen</button>
+                    </div>
                     <form id="teamForm">
                         <div class="form-group">
                             <label>Name / Minecraft Username:</label>
@@ -543,6 +558,43 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Admin-Passwort (ÄNDERE DIESES PASSWORT!)
+        const ADMIN_PASSWORD = "HopeMc2024";
+        let isAdminLoggedIn = false;
+
+        // Admin-Login prüfen
+        function checkAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                localStorage.setItem('hopemc_admin_logged_in', 'true');
+                alert('✅ Erfolgreich eingeloggt!');
+            } else {
+                alert('❌ Falsches Passwort!');
+            }
+        }
+
+        // Admin ausloggen
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+            localStorage.removeItem('hopemc_admin_logged_in');
+            document.getElementById('adminPassword').value = '';
+        }
+
+        // Beim Laden prüfen ob Admin eingeloggt ist
+        function checkAdminStatus() {
+            const loggedIn = localStorage.getItem('hopemc_admin_logged_in');
+            if (loggedIn === 'true') {
+                isAdminLoggedIn = true;
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+            }
+        }
+
         // Teammitglieder verwalten mit localStorage
         let teamMembers = [];
 
@@ -586,12 +638,16 @@
                          member.role.toLowerCase().includes('admin') ? '⚔️' : 
                          member.role.toLowerCase().includes('mod') ? '🛡️' : '⭐';
             
+            // Löschen-Button nur anzeigen wenn Admin eingeloggt ist
+            const deleteButton = isAdminLoggedIn ? 
+                `<button class="btn btn-delete" onclick="deleteMember(${member.id})">Löschen</button>` : '';
+            
             memberDiv.innerHTML = `
                 <div class="team-avatar">${emoji}</div>
                 <div class="team-name">${member.name}</div>
                 <div class="team-role">${member.role}</div>
                 <div class="team-desc">${member.desc}</div>
-                <button class="btn btn-delete" onclick="deleteMember(${member.id})">Löschen</button>
+                ${deleteButton}
             `;
             
             grid.appendChild(memberDiv);
@@ -602,6 +658,11 @@
         }
 
         function deleteMember(memberId) {
+            if (!isAdminLoggedIn) {
+                alert('❌ Du musst eingeloggt sein, um Teammitglieder zu löschen!');
+                return;
+            }
+            
             if (confirm('Möchtest du dieses Teammitglied wirklich löschen?')) {
                 teamMembers = teamMembers.filter(m => m.id !== memberId);
                 saveTeamMembers();
@@ -612,8 +673,11 @@
             }
         }
 
-        // Beim Laden der Seite Teammitglieder laden
-        window.addEventListener('DOMContentLoaded', loadTeamMembers);
+        // Beim Laden der Seite
+        window.addEventListener('DOMContentLoaded', function() {
+            checkAdminStatus();
+            loadTeamMembers();
+        });
     </script>
 </body>
 </html>
