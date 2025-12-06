@@ -440,7 +440,7 @@
                 <div class="team-grid" id="teamGrid">
                     <div class="team-member">
                         <div class="team-avatar">👑</div>
-                        <div class="team-name">Gostelft</div>
+                        <div class="team-name">Beispiel_Owner</div>
                         <div class="team-role">Owner</div>
                         <div class="team-desc">Gründer und Leiter von HopeMc.de</div>
                         <button class="btn btn-delete" onclick="deleteMember(this)">Löschen</button>
@@ -448,8 +448,7 @@
                 </div>
             </div>
         </div>
-    
-        </div>
+
         <!-- ABOUT PAGE -->
         <div id="about" class="page">
             <div class="section">
@@ -497,16 +496,9 @@
                         🎮 Voice-Channels zum gemeinsamen Spielen</p>
                     </div>
                 </div>
-                <div>
-                    <a href="https://discord.gg/twUBkvHuhe" class="discord-btn" target="_blank">
-                        Discord beitreten
-                    </a>
-                </div>
-                <div>
-                    <button class="btn btn-secondary" onclick="openDiscord()">
-                        🔗 Discord-Link öffnen
-                    </button>
-                </div>
+                <a href="https://discord.gg/twUBkvHuhe" class="discord-btn" target="_blank">
+                    Discord beitreten
+                </a>
             </div>
         </div>
     </div>
@@ -558,7 +550,29 @@
         }
 
         // Teammitglieder verwalten
-        const teamMembers = [];
+        let teamMembers = [];
+
+        // Beim Laden der Seite gespeicherte Teammitglieder laden
+        async function loadTeamMembers() {
+            try {
+                const result = await window.storage.get('hopemc_team_members');
+                if (result && result.value) {
+                    teamMembers = JSON.parse(result.value);
+                    teamMembers.forEach(member => addMemberToGrid(member, false));
+                }
+            } catch (error) {
+                console.log('Keine gespeicherten Teammitglieder gefunden');
+            }
+        }
+
+        // Teammitglieder speichern
+        async function saveTeamMembers() {
+            try {
+                await window.storage.set('hopemc_team_members', JSON.stringify(teamMembers));
+            } catch (error) {
+                console.error('Fehler beim Speichern:', error);
+            }
+        }
 
         document.getElementById('teamForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -570,12 +584,13 @@
             const member = { name, role, desc };
             teamMembers.push(member);
             
-            addMemberToGrid(member);
+            addMemberToGrid(member, true);
+            saveTeamMembers();
             
             this.reset();
         });
 
-        function addMemberToGrid(member) {
+        function addMemberToGrid(member, showAlert = false) {
             const grid = document.getElementById('teamGrid');
             const memberDiv = document.createElement('div');
             memberDiv.className = 'team-member';
@@ -589,17 +604,26 @@
                 <div class="team-name">${member.name}</div>
                 <div class="team-role">${member.role}</div>
                 <div class="team-desc">${member.desc}</div>
-                <button class="btn btn-delete" onclick="deleteMember(this)">Löschen</button>
+                <button class="btn btn-delete" onclick="deleteMember(this, '${member.name}')">Löschen</button>
             `;
             
             grid.appendChild(memberDiv);
+            
+            if (showAlert) {
+                alert('Teammitglied wurde hinzugefügt und gespeichert!');
+            }
         }
 
-        function deleteMember(button) {
+        function deleteMember(button, memberName) {
             if (confirm('Möchtest du dieses Teammitglied wirklich löschen?')) {
+                teamMembers = teamMembers.filter(m => m.name !== memberName);
+                saveTeamMembers();
                 button.closest('.team-member').remove();
             }
         }
+
+        // Beim Laden der Seite Teammitglieder laden
+        loadTeamMembers();
     </script>
 </body>
 </html>
