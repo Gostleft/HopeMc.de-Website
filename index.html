@@ -449,10 +449,10 @@
                 <div class="gamemodes">
                     <div class="gamemode-card">
                         <h3>SMP</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. Und werde der Reicheste auf dem Server!</p>
+                        <p>Überlebe in einer offenen Welt mit Freunden. Werde der Reicheste Spieler auf dem Server!</p>
                     </div>
                     <div class="gamemode-card">
-                        <h3>Craftattack</h3>
+                        <h3>Craftattack/Survival</h3>
                         <p>Gemeinsames Bauen und Erleben in unserer Survival Multiplayer Welt. Kreativität trifft Community!</p>
                     </div>
                     <div class="gamemode-card">
@@ -804,30 +804,38 @@
             }
         }
 
-        // Teammitglieder verwalten mit localStorage
+        // Teammitglieder verwalten mit shared storage
         let teamMembers = [];
 
         // Beim Laden der Seite gespeicherte Teammitglieder laden
-        function loadTeamMembers() {
-            const saved = localStorage.getItem('hopemc_team_members');
-            if (saved) {
-                teamMembers = JSON.parse(saved);
-                teamMembers.forEach(member => addMemberToGrid(member, false));
+        async function loadTeamMembers() {
+            try {
+                const result = await window.storage.get('hopemc_team_members', true);
+                if (result && result.value) {
+                    teamMembers = JSON.parse(result.value);
+                    teamMembers.forEach(member => addMemberToGrid(member, false));
+                }
+            } catch (error) {
+                console.log('Keine gespeicherten Teammitglieder gefunden');
             }
         }
 
         // Teammitglieder neu laden
-        function reloadTeamMembers() {
+        async function reloadTeamMembers() {
             document.getElementById('teamGrid').innerHTML = '';
-            loadTeamMembers();
+            await loadTeamMembers();
         }
 
         // Teammitglieder speichern
-        function saveTeamMembers() {
-            localStorage.setItem('hopemc_team_members', JSON.stringify(teamMembers));
+        async function saveTeamMembers() {
+            try {
+                await window.storage.set('hopemc_team_members', JSON.stringify(teamMembers), true);
+            } catch (error) {
+                console.error('Fehler beim Speichern:', error);
+            }
         }
 
-        document.getElementById('teamForm').addEventListener('submit', function(e) {
+        document.getElementById('teamForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const name = document.getElementById('memberName').value;
@@ -838,7 +846,7 @@
             teamMembers.push(member);
             
             addMemberToGrid(member, true);
-            saveTeamMembers();
+            await saveTeamMembers();
             
             this.reset();
         });
@@ -868,11 +876,11 @@
             grid.appendChild(memberDiv);
             
             if (showAlert) {
-                alert('Teammitglied wurde hinzugefügt und gespeichert!');
+                alert('Teammitglied wurde hinzugefügt und für alle sichtbar gespeichert!');
             }
         }
 
-        function deleteMember(memberId) {
+        async function deleteMember(memberId) {
             if (!isAdminLoggedIn) {
                 alert('❌ Du musst eingeloggt sein, um Teammitglieder zu löschen!');
                 return;
@@ -880,7 +888,7 @@
             
             if (confirm('Möchtest du dieses Teammitglied wirklich löschen?')) {
                 teamMembers = teamMembers.filter(m => m.id !== memberId);
-                saveTeamMembers();
+                await saveTeamMembers();
                 const memberDiv = document.querySelector(`[data-id="${memberId}"]`);
                 if (memberDiv) {
                     memberDiv.remove();
@@ -888,28 +896,36 @@
             }
         }
 
-        // Events verwalten
+        // Events verwalten mit shared storage
         let events = [];
 
         // Events laden
-        function loadEvents() {
-            const saved = localStorage.getItem('hopemc_events');
-            if (saved) {
-                events = JSON.parse(saved);
-                events.forEach(event => addEventToGrid(event, false));
+        async function loadEvents() {
+            try {
+                const result = await window.storage.get('hopemc_events', true);
+                if (result && result.value) {
+                    events = JSON.parse(result.value);
+                    events.forEach(event => addEventToGrid(event, false));
+                }
+            } catch (error) {
+                console.log('Keine gespeicherten Events gefunden');
             }
             updateNoEventsMessage();
         }
 
         // Events neu laden
-        function reloadEvents() {
+        async function reloadEvents() {
             document.getElementById('eventsGrid').innerHTML = '';
-            loadEvents();
+            await loadEvents();
         }
 
         // Events speichern
-        function saveEvents() {
-            localStorage.setItem('hopemc_events', JSON.stringify(events));
+        async function saveEvents() {
+            try {
+                await window.storage.set('hopemc_events', JSON.stringify(events), true);
+            } catch (error) {
+                console.error('Fehler beim Speichern:', error);
+            }
         }
 
         // "Keine Events" Nachricht aktualisieren
@@ -922,7 +938,7 @@
             }
         }
 
-        document.getElementById('eventForm').addEventListener('submit', function(e) {
+        document.getElementById('eventForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const title = document.getElementById('eventTitle').value;
@@ -934,7 +950,7 @@
             events.push(event);
             
             addEventToGrid(event, true);
-            saveEvents();
+            await saveEvents();
             updateNoEventsMessage();
             
             this.reset();
@@ -963,11 +979,11 @@
             grid.appendChild(eventDiv);
             
             if (showAlert) {
-                alert('Event wurde hinzugefügt und gespeichert!');
+                alert('Event wurde hinzugefügt und für alle sichtbar gespeichert!');
             }
         }
 
-        function deleteEvent(eventId) {
+        async function deleteEvent(eventId) {
             if (!isAdminLoggedInEvents) {
                 alert('❌ Du musst eingeloggt sein, um Events zu löschen!');
                 return;
@@ -975,7 +991,7 @@
             
             if (confirm('Möchtest du dieses Event wirklich löschen?')) {
                 events = events.filter(e => e.id !== eventId);
-                saveEvents();
+                await saveEvents();
                 const eventDiv = document.querySelector(`[data-id="${eventId}"]`);
                 if (eventDiv) {
                     eventDiv.remove();
@@ -985,10 +1001,10 @@
         }
 
         // Beim Laden der Seite
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', async function() {
             checkAdminStatus();
-            loadTeamMembers();
-            loadEvents();
+            await loadTeamMembers();
+            await loadEvents();
         });
     </script>
 </body>
