@@ -438,13 +438,7 @@
                 </div>
 
                 <div class="team-grid" id="teamGrid">
-                    <div class="team-member">
-                        <div class="team-avatar">👑</div>
-                        <div class="team-name">Beispiel_Owner</div>
-                        <div class="team-role">Owner</div>
-                        <div class="team-desc">Gründer und Leiter von HopeMc.de</div>
-                        <button class="btn btn-delete" onclick="deleteMember(this)">Löschen</button>
-                    </div>
+                    <!-- Teammitglieder werden hier dynamisch hinzugefügt -->
                 </div>
             </div>
         </div>
@@ -549,29 +543,21 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Teammitglieder verwalten
+        // Teammitglieder verwalten mit localStorage
         let teamMembers = [];
 
         // Beim Laden der Seite gespeicherte Teammitglieder laden
-        async function loadTeamMembers() {
-            try {
-                const result = await window.storage.get('hopemc_team_members');
-                if (result && result.value) {
-                    teamMembers = JSON.parse(result.value);
-                    teamMembers.forEach(member => addMemberToGrid(member, false));
-                }
-            } catch (error) {
-                console.log('Keine gespeicherten Teammitglieder gefunden');
+        function loadTeamMembers() {
+            const saved = localStorage.getItem('hopemc_team_members');
+            if (saved) {
+                teamMembers = JSON.parse(saved);
+                teamMembers.forEach(member => addMemberToGrid(member, false));
             }
         }
 
         // Teammitglieder speichern
-        async function saveTeamMembers() {
-            try {
-                await window.storage.set('hopemc_team_members', JSON.stringify(teamMembers));
-            } catch (error) {
-                console.error('Fehler beim Speichern:', error);
-            }
+        function saveTeamMembers() {
+            localStorage.setItem('hopemc_team_members', JSON.stringify(teamMembers));
         }
 
         document.getElementById('teamForm').addEventListener('submit', function(e) {
@@ -581,7 +567,7 @@
             const role = document.getElementById('memberRole').value;
             const desc = document.getElementById('memberDesc').value || 'Teammitglied bei HopeMc.de';
 
-            const member = { name, role, desc };
+            const member = { name, role, desc, id: Date.now() };
             teamMembers.push(member);
             
             addMemberToGrid(member, true);
@@ -594,6 +580,7 @@
             const grid = document.getElementById('teamGrid');
             const memberDiv = document.createElement('div');
             memberDiv.className = 'team-member';
+            memberDiv.dataset.id = member.id;
             
             const emoji = member.role.toLowerCase().includes('owner') ? '👑' : 
                          member.role.toLowerCase().includes('admin') ? '⚔️' : 
@@ -604,7 +591,7 @@
                 <div class="team-name">${member.name}</div>
                 <div class="team-role">${member.role}</div>
                 <div class="team-desc">${member.desc}</div>
-                <button class="btn btn-delete" onclick="deleteMember(this, '${member.name}')">Löschen</button>
+                <button class="btn btn-delete" onclick="deleteMember(${member.id})">Löschen</button>
             `;
             
             grid.appendChild(memberDiv);
@@ -614,16 +601,19 @@
             }
         }
 
-        function deleteMember(button, memberName) {
+        function deleteMember(memberId) {
             if (confirm('Möchtest du dieses Teammitglied wirklich löschen?')) {
-                teamMembers = teamMembers.filter(m => m.name !== memberName);
+                teamMembers = teamMembers.filter(m => m.id !== memberId);
                 saveTeamMembers();
-                button.closest('.team-member').remove();
+                const memberDiv = document.querySelector(`[data-id="${memberId}"]`);
+                if (memberDiv) {
+                    memberDiv.remove();
+                }
             }
         }
 
         // Beim Laden der Seite Teammitglieder laden
-        loadTeamMembers();
+        window.addEventListener('DOMContentLoaded', loadTeamMembers);
     </script>
 </body>
 </html>
