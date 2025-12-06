@@ -264,6 +264,54 @@
             line-height: 1.5;
         }
 
+        .event-card {
+            background: linear-gradient(135deg, rgba(65, 105, 225, 0.15), rgba(138, 43, 226, 0.15));
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            border-color: #8a2be2;
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3);
+        }
+
+        .event-date {
+            color: #4169e1;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .event-title {
+            color: #8a2be2;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .event-description {
+            color: #ccc;
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .event-reward {
+            background: rgba(138, 43, 226, 0.2);
+            border-left: 3px solid #8a2be2;
+            padding: 10px 15px;
+            margin-top: 15px;
+            color: #4169e1;
+            font-weight: bold;
+        }
+
         .add-member-form {
             background: rgba(0, 0, 0, 0.4);
             padding: 25px;
@@ -353,6 +401,7 @@
         <div class="nav-container">
             <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
             <button class="nav-btn" onclick="showPage('gamemodes')">🎮 Spielmodi</button>
+            <button class="nav-btn" onclick="showPage('events')">🎉 Events</button>
             <button class="nav-btn" onclick="showPage('team')">👥 Team</button>
             <button class="nav-btn" onclick="showPage('about')">📖 Über uns</button>
             <button class="nav-btn" onclick="showPage('contact')">✉️ Kontakt</button>
@@ -399,17 +448,71 @@
                 <h2>🎮 Spielmodi</h2>
                 <div class="gamemodes">
                     <div class="gamemode-card">
-                        <h3>Survival</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. Baue, erkunde und meistere Herausforderungen!</p>
+                        <h3>SMP</h3>
+                        <p>Überlebe in einer offenen Welt mit Freunden. Und werde der Reicheste auf dem server!</p>
                     </div>
                     <div class="gamemode-card">
-                        <h3>Craftattack/SMP</h3>
+                        <h3>Craftattack</h3>
                         <p>Gemeinsames Bauen und Erleben in unserer Survival Multiplayer Welt. Kreativität trifft Community!</p>
                     </div>
                     <div class="gamemode-card">
                         <h3>PvP</h3>
                         <p>Zeige deine Kampfkünste! Tritt gegen andere Spieler an und werde zur Legende.</p>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EVENTS PAGE -->
+        <div id="events" class="page">
+            <div class="section">
+                <h2>🎉 Events</h2>
+
+                <!-- Login-Bereich für Admin -->
+                <div id="adminLoginEvents" class="add-member-form">
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">🔒 Admin-Login</h3>
+                    <p style="color: #ccc; margin-bottom: 15px;">Nur für Administratoren: Gib das Passwort ein, um Events zu verwalten.</p>
+                    <div class="form-group">
+                        <label>Passwort:</label>
+                        <input type="password" id="adminPasswordEvents" placeholder="Admin-Passwort eingeben" onkeypress="if(event.key==='Enter') checkAdminPasswordEvents()">
+                    </div>
+                    <button type="button" class="btn" onclick="checkAdminPasswordEvents()">Einloggen</button>
+                </div>
+            
+                <!-- Event hinzufügen (versteckt bis Login) -->
+                <div id="adminPanelEvents" class="add-member-form" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="color: #8a2be2; margin: 0;">✅ Eingeloggt - Event hinzufügen</h3>
+                        <button type="button" class="btn" onclick="logoutAdminEvents()" style="padding: 8px 20px; font-size: 0.9em;">Ausloggen</button>
+                    </div>
+                    <form id="eventForm">
+                        <div class="form-group">
+                            <label>Event-Titel:</label>
+                            <input type="text" id="eventTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Datum & Uhrzeit:</label>
+                            <input type="text" id="eventDate" placeholder="z.B. 15.12.2024 um 18:00 Uhr" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Beschreibung:</label>
+                            <textarea id="eventDesc" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Belohnungen (optional):</label>
+                            <input type="text" id="eventReward" placeholder="z.B. 1000 Coins, Spezial-Items">
+                        </div>
+                        <button type="submit" class="btn">Event hinzufügen</button>
+                    </form>
+                </div>
+
+                <div class="team-grid" id="eventsGrid">
+                    <!-- Events werden hier dynamisch hinzugefügt -->
+                </div>
+
+                <div id="noEvents" style="text-align: center; padding: 60px 20px; color: #8a2be2;">
+                    <h3 style="font-size: 2em; margin-bottom: 20px;">🎭 Keine Events geplant</h3>
+                    <p style="font-size: 1.2em; color: #ccc;">Schau bald wieder vorbei! Neue Events werden hier angekündigt.</p>
                 </div>
             </div>
         </div>
@@ -510,25 +613,33 @@
 
                 <div class="add-member-form" style="max-width: 800px; margin: 0 auto;">
                     <h3 style="color: #8a2be2; margin-bottom: 20px;">📝 Kontaktformular</h3>
-                    <form id="contactForm">
+                    <form action="https://formsubmit.co/support@hopemc.de" method="POST">
+                        <!-- FormSubmit Konfiguration -->
+                        <input type="hidden" name="_subject" value="Neue Kontaktanfrage von HopeMc.de">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        
                         <div class="form-group">
                             <label>Dein Name:</label>
-                            <input type="text" id="contactName" required>
+                            <input type="text" name="name" required>
                         </div>
                         <div class="form-group">
                             <label>Deine Email:</label>
-                            <input type="email" id="contactEmail" required>
+                            <input type="email" name="email" required>
                         </div>
                         <div class="form-group">
                             <label>Betreff:</label>
-                            <input type="text" id="contactSubject" required>
+                            <input type="text" name="subject" required>
                         </div>
                         <div class="form-group">
                             <label>Nachricht:</label>
-                            <textarea id="contactMessage" rows="6" required></textarea>
+                            <textarea name="message" rows="6" required></textarea>
                         </div>
                         <button type="submit" class="btn">Nachricht senden</button>
                     </form>
+                    <p style="color: #888; font-size: 0.9em; margin-top: 15px; text-align: center;">
+                        ⚠️ Beim ersten Absenden musst du deine Email-Adresse bestätigen (einmalig)
+                    </p>
                 </div>
 
                 <div class="gamemodes" style="margin-top: 50px;">
@@ -605,25 +716,6 @@
             alert('Email-Adresse wurde kopiert!');
         }
 
-        // Kontaktformular
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('contactName').value;
-            const email = document.getElementById('contactEmail').value;
-            const subject = document.getElementById('contactSubject').value;
-            const message = document.getElementById('contactMessage').value;
-            
-            // Email-Link erstellen
-            const mailtoLink = `mailto:support@hopemc.de?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Von: ' + name + ' (' + email + ')\n\n' + message)}`;
-            
-            // Email-Client öffnen
-            window.location.href = mailtoLink;
-            
-            alert('Dein Email-Programm wird geöffnet. Bitte sende die Email ab!');
-            this.reset();
-        });
-
         // Seiten-Navigation
         function showPage(pageName) {
             const pages = document.querySelectorAll('.page');
@@ -642,8 +734,9 @@
         // Admin-Passwort (ÄNDERE DIESES PASSWORT!)
         const ADMIN_PASSWORD = "2AKM1kwd";
         let isAdminLoggedIn = false;
+        let isAdminLoggedInEvents = false;
 
-        // Admin-Login prüfen
+        // Admin-Login prüfen (Team)
         function checkAdminPassword() {
             const password = document.getElementById('adminPassword').value;
             if (password === ADMIN_PASSWORD) {
@@ -652,18 +745,45 @@
                 document.getElementById('adminPanel').style.display = 'block';
                 localStorage.setItem('hopemc_admin_logged_in', 'true');
                 alert('✅ Erfolgreich eingeloggt!');
+                reloadTeamMembers();
             } else {
                 alert('❌ Falsches Passwort!');
             }
         }
 
-        // Admin ausloggen
+        // Admin ausloggen (Team)
         function logoutAdmin() {
             isAdminLoggedIn = false;
             document.getElementById('adminLogin').style.display = 'block';
             document.getElementById('adminPanel').style.display = 'none';
             localStorage.removeItem('hopemc_admin_logged_in');
             document.getElementById('adminPassword').value = '';
+            reloadTeamMembers();
+        }
+
+        // Admin-Login prüfen (Events)
+        function checkAdminPasswordEvents() {
+            const password = document.getElementById('adminPasswordEvents').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedInEvents = true;
+                document.getElementById('adminLoginEvents').style.display = 'none';
+                document.getElementById('adminPanelEvents').style.display = 'block';
+                localStorage.setItem('hopemc_admin_logged_in_events', 'true');
+                alert('✅ Erfolgreich eingeloggt!');
+                reloadEvents();
+            } else {
+                alert('❌ Falsches Passwort!');
+            }
+        }
+
+        // Admin ausloggen (Events)
+        function logoutAdminEvents() {
+            isAdminLoggedInEvents = false;
+            document.getElementById('adminLoginEvents').style.display = 'block';
+            document.getElementById('adminPanelEvents').style.display = 'none';
+            localStorage.removeItem('hopemc_admin_logged_in_events');
+            document.getElementById('adminPasswordEvents').value = '';
+            reloadEvents();
         }
 
         // Beim Laden prüfen ob Admin eingeloggt ist
@@ -673,6 +793,13 @@
                 isAdminLoggedIn = true;
                 document.getElementById('adminLogin').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
+            }
+            
+            const loggedInEvents = localStorage.getItem('hopemc_admin_logged_in_events');
+            if (loggedInEvents === 'true') {
+                isAdminLoggedInEvents = true;
+                document.getElementById('adminLoginEvents').style.display = 'none';
+                document.getElementById('adminPanelEvents').style.display = 'block';
             }
         }
 
@@ -686,6 +813,12 @@
                 teamMembers = JSON.parse(saved);
                 teamMembers.forEach(member => addMemberToGrid(member, false));
             }
+        }
+
+        // Teammitglieder neu laden
+        function reloadTeamMembers() {
+            document.getElementById('teamGrid').innerHTML = '';
+            loadTeamMembers();
         }
 
         // Teammitglieder speichern
@@ -754,10 +887,107 @@
             }
         }
 
+        // Events verwalten
+        let events = [];
+
+        // Events laden
+        function loadEvents() {
+            const saved = localStorage.getItem('hopemc_events');
+            if (saved) {
+                events = JSON.parse(saved);
+                events.forEach(event => addEventToGrid(event, false));
+            }
+            updateNoEventsMessage();
+        }
+
+        // Events neu laden
+        function reloadEvents() {
+            document.getElementById('eventsGrid').innerHTML = '';
+            loadEvents();
+        }
+
+        // Events speichern
+        function saveEvents() {
+            localStorage.setItem('hopemc_events', JSON.stringify(events));
+        }
+
+        // "Keine Events" Nachricht aktualisieren
+        function updateNoEventsMessage() {
+            const noEventsDiv = document.getElementById('noEvents');
+            if (events.length === 0) {
+                noEventsDiv.style.display = 'block';
+            } else {
+                noEventsDiv.style.display = 'none';
+            }
+        }
+
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('eventTitle').value;
+            const date = document.getElementById('eventDate').value;
+            const desc = document.getElementById('eventDesc').value;
+            const reward = document.getElementById('eventReward').value;
+
+            const event = { title, date, desc, reward, id: Date.now() };
+            events.push(event);
+            
+            addEventToGrid(event, true);
+            saveEvents();
+            updateNoEventsMessage();
+            
+            this.reset();
+        });
+
+        function addEventToGrid(event, showAlert = false) {
+            const grid = document.getElementById('eventsGrid');
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'event-card';
+            eventDiv.dataset.id = event.id;
+            
+            const deleteButton = isAdminLoggedInEvents ? 
+                `<button class="btn btn-delete" onclick="deleteEvent(${event.id})">Löschen</button>` : '';
+            
+            const rewardHTML = event.reward ? 
+                `<div class="event-reward">🎁 Belohnungen: ${event.reward}</div>` : '';
+            
+            eventDiv.innerHTML = `
+                <div class="event-date">📅 ${event.date}</div>
+                <div class="event-title">${event.title}</div>
+                <div class="event-description">${event.desc}</div>
+                ${rewardHTML}
+                ${deleteButton}
+            `;
+            
+            grid.appendChild(eventDiv);
+            
+            if (showAlert) {
+                alert('Event wurde hinzugefügt und gespeichert!');
+            }
+        }
+
+        function deleteEvent(eventId) {
+            if (!isAdminLoggedInEvents) {
+                alert('❌ Du musst eingeloggt sein, um Events zu löschen!');
+                return;
+            }
+            
+            if (confirm('Möchtest du dieses Event wirklich löschen?')) {
+                events = events.filter(e => e.id !== eventId);
+                saveEvents();
+                const eventDiv = document.querySelector(`[data-id="${eventId}"]`);
+                if (eventDiv) {
+                    eventDiv.remove();
+                }
+                updateNoEventsMessage();
+            }
+        }
+
         // Beim Laden der Seite
         window.addEventListener('DOMContentLoaded', function() {
             checkAdminStatus();
             loadTeamMembers();
+            loadEvents();
         });
     </script>
 </body>
