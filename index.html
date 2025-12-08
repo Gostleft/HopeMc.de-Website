@@ -454,7 +454,6 @@
             <button class="nav-btn" onclick="showPage('gamemodes')">🎮 Spielmodi</button>
             <button class="nav-btn" onclick="showPage('events')">🎉 Events</button>
             <button class="nav-btn" onclick="showPage('team')">👥 Team</button>
-            <button class="nav-btn" onclick="showPage('status')">🟢 Server Status</button>
             <button class="nav-btn" onclick="showPage('about')">📖 Über uns</button>
             <button class="nav-btn" onclick="showPage('contact')">✉️ Kontakt</button>
             <button class="nav-btn" onclick="showPage('discord')">💬 Discord</button>
@@ -468,7 +467,7 @@
                 <h2>Willkommen bei HopeMc.de!</h2>
                 <p style="font-size: 1.2em; text-align: center; line-height: 1.8; color: #ccc;">
                     Erlebe das ultimative Minecraft-Abenteuer auf unserem Server! 
-                    Ob Survival, Craftattack oder PvP - bei uns findest du alles, was dein Gamer-Herz begehrt.
+                    Ob SMP, Craftattack oder PvP - bei uns findest du alles, was dein Gamer-Herz begehrt.
                 </p>
                 <p style="font-size: 1.1em; text-align: center; margin-top: 20px; color: #8a2be2;">
                     Verbinde dich jetzt mit: <strong style="color: #4169e1;">HopeMc.de</strong>
@@ -500,11 +499,11 @@
                 <h2>🎮 Spielmodi</h2>
                 <div class="gamemodes">
                     <div class="gamemode-card">
-                        <h3>Survival</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. Baue, erkunde und meistere Herausforderungen!</p>
+                        <h3>SMP</h3>
+                        <p>Überlebe in einer offenen Welt mit Freunden. Werde der Reicheste auf dem server!</p>
                     </div>
                     <div class="gamemode-card">
-                        <h3>Craftattack/SMP</h3>
+                        <h3>Craftattack</h3>
                         <p>Gemeinsames Bauen und Erleben in unserer Survival Multiplayer Welt. Kreativität trifft Community!</p>
                     </div>
                     <div class="gamemode-card">
@@ -625,7 +624,7 @@
                         <span id="statusText" style="color: #00ff00; font-weight: bold;">Server Online</span>
                     </div>
                     <p style="color: #ccc; font-size: 1.2em;">
-                        Verbinde dich mit: <strong style="color: #4169e1;">http://45.157.232.185:25590/stats</strong>
+                        Verbinde dich mit: <strong style="color: #4169e1;">HopeMc.de</strong>
                     </p>
                 </div>
 
@@ -657,32 +656,20 @@
                         <h3>🟢 SMP</h3>
                         <p style="margin-top: 15px;"><strong style="color: #4169e1;">Status:</strong> Online</p>
                         <p><strong style="color: #4169e1;">Version:</strong> 1.20.x</p>
-                        <p><strong style="color: #4169e1;">Spieler:</strong> <span id="smp">-</span></p>
+                        <p><strong style="color: #4169e1;">Spieler:</strong> <span id="survivalPlayers">-</span></p>
                     </div>
                     <div class="gamemode-card">
                         <h3>🟢 Craftattack</h3>
                         <p style="margin-top: 15px;"><strong style="color: #4169e1;">Status:</strong> Online</p>
                         <p><strong style="color: #4169e1;">Version:</strong> 1.20.x</p>
-                        <p><strong style="color: #4169e1;">Spieler:</strong> <span id="survival">-</span></p>
+                        <p><strong style="color: #4169e1;">Spieler:</strong> <span id="smpPlayers">-</span></p>
                     </div>
                     <div class="gamemode-card">
-                        <h3>🟢 PvP</h3>
+                        <h3>🟢 PvP </h3>
                         <p style="margin-top: 15px;"><strong style="color: #4169e1;">Status:</strong> Online</p>
                         <p><strong style="color: #4169e1;">Version:</strong> 1.20.x</p>
-                        <p><strong style="color: #4169e1;">Spieler:</strong> <span id="pvp">-</span></p>
+                        <p><strong style="color: #4169e1;">Spieler:</strong> <span id="pvpPlayers">-</span></p>
                     </div>
-                      <div class="gamemode-card">
-                        <h3>🟢 Lobby</h3>
-                        <p style="margin-top: 15px;"><strong style="color: #4169e1;">Status:</strong> Online</p>
-                        <p><strong style="color: #4169e1;">Version:</strong> 1.20.x</p>
-                        <p><strong style="color: #4169e1;">Spieler:</strong> <span id="lobby">-</span></p>
-                    </div>
-                     <div class="gamemode-card">
-                        <h3>🟢 Event</h3>
-                        <p style="margin-top: 15px;"><strong style="color: #4169e1;">Status:</strong> Online</p>
-                        <p><strong style="color: #4169e1;">Version:</strong> 1.20.x</p>
-                        <p><strong style="color: #4169e1;">Spieler:</strong> <span id="event">-</span></p>
-                    <div>
                 </div>
 
                 <div class="add-member-form" style="margin-top: 50px; text-align: center;">
@@ -851,152 +838,6 @@
             alert('Email-Adresse wurde kopiert!');
         }
 
-        // Server Status aktualisieren
-        async function updateServerStatus() {
-            try {
-                // Zeige Lade-Status
-                document.getElementById('playersOnline').textContent = '...';
-                document.getElementById('serverPing').textContent = '...';
-                
-                let serverOnline = false;
-                let serverData = null;
-                
-                // Versuch 1: mcstatus.io
-                try {
-                    console.log('Versuche mcstatus.io...');
-                    const response1 = await fetch('https://api.mcstatus.io/v2/status/java/hopemc.de', {
-                        method: 'GET',
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    
-                    if (response1.ok) {
-                        const data1 = await response1.json();
-                        console.log('mcstatus.io Antwort:', data1);
-                        
-                        if (data1.online === true) {
-                            serverOnline = true;
-                            serverData = {
-                                playersOnline: data1.players?.online || 0,
-                                maxPlayers: data1.players?.max || 100,
-                                version: data1.version?.name_clean || data1.version?.name_raw || '1.20.x',
-                                motd: data1.motd?.clean || 'HopeMc.de'
-                            };
-                        }
-                    }
-                } catch (e) {
-                    console.log('mcstatus.io fehlgeschlagen:', e);
-                }
-                
-                // Versuch 2: mcsrvstat.us (Backup)
-                if (!serverOnline) {
-                    try {
-                        console.log('Versuche mcsrvstat.us...');
-                        const response2 = await fetch('https://api.mcsrvstat.us/3/hopemc.de');
-                        
-                        if (response2.ok) {
-                            const data2 = await response2.json();
-                            console.log('mcsrvstat.us Antwort:', data2);
-                            
-                            if (data2.online === true) {
-                                serverOnline = true;
-                                serverData = {
-                                    playersOnline: data2.players?.online || 0,
-                                    maxPlayers: data2.players?.max || 100,
-                                    version: data2.version || '1.20.x',
-                                    motd: data2.motd?.clean?.[0] || 'HopeMc.de'
-                                };
-                            }
-                        }
-                    } catch (e) {
-                        console.log('mcsrvstat.us fehlgeschlagen:', e);
-                    }
-                }
-                
-                // Versuch 3: minecraft-api.com (Backup 2)
-                if (!serverOnline) {
-                    try {
-                        console.log('Versuche minecraft-api.com...');
-                        const response3 = await fetch('https://api.minecraft-api.com/v1/server/java/hopemc.de');
-                        
-                        if (response3.ok) {
-                            const data3 = await response3.json();
-                            console.log('minecraft-api.com Antwort:', data3);
-                            
-                            if (data3.status === 'online') {
-                                serverOnline = true;
-                                serverData = {
-                                    playersOnline: data3.players?.online || 0,
-                                    maxPlayers: data3.players?.max || 100,
-                                    version: data3.version || '1.20.x',
-                                    motd: 'HopeMc.de'
-                                };
-                            }
-                        }
-                    } catch (e) {
-                        console.log('minecraft-api.com fehlgeschlagen:', e);
-                    }
-                }
-                
-                // Zeige Ergebnis
-                if (serverOnline && serverData) {
-                    // Server ist online - zeige echte Daten
-                    document.getElementById('statusIndicator').className = 'status-indicator status-online';
-                    document.getElementById('statusText').textContent = 'Server Online';
-                    document.getElementById('statusText').style.color = '#00ff00';
-                    
-                    document.getElementById('playersOnline').textContent = serverData.playersOnline;
-                    document.querySelector('#playersOnline').nextElementSibling.textContent = `von ${serverData.maxPlayers} Slots`;
-                    document.getElementById('serverPing').textContent = '~50ms';
-                    
-                    // Spieler auf Modi verteilen
-                    const total = serverData.playersOnline;
-                    const survivalP = Math.max(0, Math.floor(total * 0.5));
-                    const smpP = Math.max(0, Math.floor(total * 0.3));
-                    const pvpP = Math.max(0, total - survivalP - smpP);
-                    
-                    document.getElementById('survivalPlayers').textContent = survivalP;
-                    document.getElementById('smpPlayers').textContent = smpP;
-                    document.getElementById('pvpPlayers').textContent = pvpP;
-                    
-                    document.querySelectorAll('.gamemode-card p:nth-child(3)').forEach(el => {
-                        el.innerHTML = `<strong style="color: #4169e1;">Version:</strong> ${serverData.version}`;
-                    });
-                    
-                    alert(`✅ Server ist ONLINE!\n\n👥 Spieler: ${serverData.playersOnline}/${serverData.maxPlayers}\n🎮 Version: ${serverData.version}`);
-                    
-                } else {
-                    // Server nicht erreichbar
-                    document.getElementById('statusIndicator').className = 'status-indicator status-offline';
-                    document.getElementById('statusText').textContent = 'Server wird vorbereitet';
-                    document.getElementById('statusText').style.color = '#ff9900';
-                    
-                    document.getElementById('playersOnline').textContent = '0';
-                    document.querySelector('#playersOnline').nextElementSibling.textContent = 'von 100 Slots';
-                    document.getElementById('serverPing').textContent = '-';
-                    document.getElementById('survivalPlayers').textContent = '0';
-                    document.getElementById('smpPlayers').textContent = '0';
-                    document.getElementById('pvpPlayers').textContent = '0';
-                    
-                    document.querySelectorAll('.gamemode-card p:nth-child(3)').forEach(el => {
-                        el.innerHTML = `<strong style="color: #4169e1;">Version:</strong> 1.20.x`;
-                    });
-                    
-                    alert('ℹ️ Server konnte nicht erreicht werden.\n\nMögliche Gründe:\n• Domain-Weiterleitung braucht noch Zeit (kann bis 24h dauern)\n• Server hat Query deaktiviert\n• Firewall blockiert Status-Abfragen\n\nTipp: Prüfe in deiner server.properties:\nenable-query=true\nquery.port=25565');
-                }
-                
-                const now = new Date();
-                document.getElementById('lastUpdate').textContent = now.toLocaleTimeString('de-DE');
-                
-            } catch (error) {
-                console.error('Allgemeiner Fehler:', error);
-                document.getElementById('statusIndicator').className = 'status-indicator status-offline';
-                document.getElementById('statusText').textContent = 'Fehler beim Laden';
-                document.getElementById('statusText').style.color = '#ff0000';
-                document.getElementById('playersOnline').textContent = '0';
-                document.getElementById('serverPing').textContent = '-';
-            }
-        }
-
         // Beim Laden der Seite
         window.addEventListener('DOMContentLoaded', async function() {
             checkAdminStatus();
@@ -1020,7 +861,7 @@
         }
 
         // Admin-Passwort (ÄNDERE DIESES PASSWORT!)
-        const ADMIN_PASSWORD = "HopeMc2024";
+        const ADMIN_PASSWORD = "hm2025hm";
         let isAdminLoggedIn = false;
         let isAdminLoggedInEvents = false;
 
