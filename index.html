@@ -467,7 +467,7 @@
                 <h2>Willkommen bei HopeMc.de!</h2>
                 <p style="font-size: 1.2em; text-align: center; line-height: 1.8; color: #ccc;">
                     Erlebe das ultimative Minecraft-Abenteuer auf unserem Server! 
-                    Ob SMP, Craftattack oder PvP - bei uns findest du alles, was dein Gamer-Herz begehrt.
+                    Ob Survival, Craftattack oder PvP - bei uns findest du alles, was dein Gamer-Herz begehrt.
                 </p>
                 <p style="font-size: 1.1em; text-align: center; margin-top: 20px; color: #8a2be2;">
                     Verbinde dich jetzt mit: <strong style="color: #4169e1;">HopeMc.de</strong>
@@ -500,7 +500,7 @@
                 <div class="gamemodes">
                     <div class="gamemode-card">
                         <h3>SMP</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. Werde der Reicheste auf dem server!</p>
+                        <p>Überlebe in einer offenen Welt mit Freunden. Werde der Reicheste!</p>
                     </div>
                     <div class="gamemode-card">
                         <h3>Craftattack</h3>
@@ -807,7 +807,7 @@
     </div>
 
     <footer>
-        <p>© 2025 HopeMc.de - Alle Rechte vorbehalten</p>
+        <p>© 2024 HopeMc.de - Alle Rechte vorbehalten</p>
         <p style="margin-top: 10px; color: #666;">Nicht mit Mojang Studios verbunden</p>
     </footer>
 
@@ -861,7 +861,7 @@
         }
 
         // Admin-Passwort (ÄNDERE DIESES PASSWORT!)
-        const ADMIN_PASSWORD = "hm2025hm";
+        const ADMIN_PASSWORD = "HM2025Hm";
         let isAdminLoggedIn = false;
         let isAdminLoggedInEvents = false;
 
@@ -874,9 +874,8 @@
                 document.getElementById('adminPanel').style.display = 'block';
                 localStorage.setItem('hopemc_admin_logged_in', 'true');
                 alert('✅ Erfolgreich eingeloggt!');
-                // Teammitglieder neu laden um Löschen-Buttons anzuzeigen
-                document.getElementById('teamGrid').innerHTML = '';
-                teamMembers.forEach(member => addMemberToGrid(member, false));
+                // Teammitglieder neu rendern um Löschen-Buttons anzuzeigen
+                reloadTeamDisplay();
             } else {
                 alert('❌ Falsches Passwort!');
             }
@@ -889,7 +888,12 @@
             document.getElementById('adminPanel').style.display = 'none';
             localStorage.removeItem('hopemc_admin_logged_in');
             document.getElementById('adminPassword').value = '';
-            // Teammitglieder neu laden um Löschen-Buttons zu verstecken
+            // Teammitglieder neu rendern um Löschen-Buttons zu verstecken
+            reloadTeamDisplay();
+        }
+
+        // Team-Anzeige neu laden
+        function reloadTeamDisplay() {
             document.getElementById('teamGrid').innerHTML = '';
             teamMembers.forEach(member => addMemberToGrid(member, false));
         }
@@ -903,9 +907,8 @@
                 document.getElementById('adminPanelEvents').style.display = 'block';
                 localStorage.setItem('hopemc_admin_logged_in_events', 'true');
                 alert('✅ Erfolgreich eingeloggt!');
-                // Events neu laden um Löschen-Buttons anzuzeigen
-                document.getElementById('eventsGrid').innerHTML = '';
-                events.forEach(event => addEventToGrid(event, false));
+                // Events neu rendern um Löschen-Buttons anzuzeigen
+                reloadEventsDisplay();
             } else {
                 alert('❌ Falsches Passwort!');
             }
@@ -918,9 +921,15 @@
             document.getElementById('adminPanelEvents').style.display = 'none';
             localStorage.removeItem('hopemc_admin_logged_in_events');
             document.getElementById('adminPasswordEvents').value = '';
-            // Events neu laden um Löschen-Buttons zu verstecken
+            // Events neu rendern um Löschen-Buttons zu verstecken
+            reloadEventsDisplay();
+        }
+
+        // Events-Anzeige neu laden
+        function reloadEventsDisplay() {
             document.getElementById('eventsGrid').innerHTML = '';
             events.forEach(event => addEventToGrid(event, false));
+            updateNoEventsMessage();
         }
 
         // Beim Laden prüfen ob Admin eingeloggt ist
