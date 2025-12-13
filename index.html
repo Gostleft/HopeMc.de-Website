@@ -499,11 +499,11 @@
                 <h2>🎮 Spielmodi</h2>
                 <div class="gamemodes">
                     <div class="gamemode-card">
-                        <h3>Survival</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. Baue, erkunde und meistere Herausforderungen!</p>
+                        <h3>SMP</h3>
+                        <p>Überlebe in einer offenen Welt mit Freunden. Werde der Recheste auf dem Server!</p>
                     </div>
                     <div class="gamemode-card">
-                        <h3>Craftattack/SMP</h3>
+                        <h3>Craftattack</h3>
                         <p>Gemeinsames Bauen und Erleben in unserer Survival Multiplayer Welt. Kreativität trifft Community!</p>
                     </div>
                     <div class="gamemode-card">
@@ -861,7 +861,7 @@
         }
 
         // Admin-Passwort (ÄNDERE DIESES PASSWORT!)
-        const ADMIN_PASSWORD = "HopeMc2024";
+        const ADMIN_PASSWORD = "HM2025Hm";
         let isAdminLoggedIn = false;
         let isAdminLoggedInEvents = false;
 
@@ -1136,7 +1136,7 @@
             
             if (confirm('Möchtest du dieses Event wirklich löschen?')) {
                 events = events.filter(e => e.id !== eventId);
-                await saveEvents();
+                saveEvents();
                 const eventDiv = document.querySelector(`[data-id="${eventId}"]`);
                 if (eventDiv) {
                     eventDiv.remove();
@@ -1146,10 +1146,10 @@
         }
 
         // Beim Laden der Seite
-        window.addEventListener('DOMContentLoaded', async function() {
+        window.addEventListener('DOMContentLoaded', function() {
             checkAdminStatus();
-            await loadTeamMembers();
-            await loadEvents();
+            loadTeamMembers();
+            loadEvents();
         });
     </script>
 </body>
