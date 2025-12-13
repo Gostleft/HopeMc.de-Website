@@ -499,11 +499,11 @@
                 <h2>🎮 Spielmodi</h2>
                 <div class="gamemodes">
                     <div class="gamemode-card">
-                        <h3>SMP</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. Werde der Reicheste auf dem Server!</p>
+                        <h3>Survival</h3>
+                        <p>Überlebe in einer offenen Welt mit Freunden. Baue, erkunde und meistere Herausforderungen!</p>
                     </div>
                     <div class="gamemode-card">
-                        <h3>Craftattack</h3>
+                        <h3>Craftattack/SMP</h3>
                         <p>Gemeinsames Bauen und Erleben in unserer Survival Multiplayer Welt. Kreativität trifft Community!</p>
                     </div>
                     <div class="gamemode-card">
@@ -900,6 +900,7 @@
             if (token && token.startsWith('ghp_')) {
                 localStorage.setItem('github_token', token);
                 document.getElementById('githubTokenSetup').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
                 alert('✅ Token gespeichert! Du kannst jetzt Teammitglieder hinzufügen.');
             } else {
                 alert('❌ Ungültiger Token! Token muss mit "ghp_" beginnen.');
@@ -911,6 +912,7 @@
             if (token && token.startsWith('ghp_')) {
                 localStorage.setItem('github_token', token);
                 document.getElementById('githubTokenSetupEvents').style.display = 'none';
+                document.getElementById('adminPanelEvents').style.display = 'block';
                 alert('✅ Token gespeichert! Du kannst jetzt Events hinzufügen.');
             } else {
                 alert('❌ Ungültiger Token! Token muss mit "ghp_" beginnen.');
@@ -972,7 +974,7 @@
         }
 
         // Admin-Passwort (ÄNDERE DIESES PASSWORT!)
-        const ADMIN_PASSWORD = "HM2025Hm";
+        const ADMIN_PASSWORD = "HopeMc2024";
         let isAdminLoggedIn = false;
         let isAdminLoggedInEvents = false;
 
@@ -1049,14 +1051,26 @@
             if (loggedIn === 'true') {
                 isAdminLoggedIn = true;
                 document.getElementById('adminLogin').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
+                
+                // Prüfe ob GitHub Token vorhanden ist
+                if (!getGithubToken()) {
+                    document.getElementById('githubTokenSetup').style.display = 'block';
+                } else {
+                    document.getElementById('adminPanel').style.display = 'block';
+                }
             }
             
             const loggedInEvents = localStorage.getItem('hopemc_admin_logged_in_events');
             if (loggedInEvents === 'true') {
                 isAdminLoggedInEvents = true;
                 document.getElementById('adminLoginEvents').style.display = 'none';
-                document.getElementById('adminPanelEvents').style.display = 'block';
+                
+                // Prüfe ob GitHub Token vorhanden ist
+                if (!getGithubToken()) {
+                    document.getElementById('githubTokenSetupEvents').style.display = 'block';
+                } else {
+                    document.getElementById('adminPanelEvents').style.display = 'block';
+                }
             }
         }
 
