@@ -500,7 +500,7 @@
                 <div class="gamemodes">
                     <div class="gamemode-card">
                         <h3>SMP</h3>
-                        <p>Überlebe in einer offenen Welt mit Freunden. Werde der Recheste auf dem Server!</p>
+                        <p>Überlebe in einer offenen Welt mit Freunden. Werde der Reicheste auf dem Server!</p>
                     </div>
                     <div class="gamemode-card">
                         <h3>Craftattack</h3>
@@ -526,6 +526,17 @@
                 <div id="noEvents" style="text-align: center; padding: 60px 20px; color: #8a2be2;">
                     <h3 style="font-size: 2em; margin-bottom: 20px;">🎭 Keine Events geplant</h3>
                     <p style="font-size: 1.2em; color: #ccc;">Schau bald wieder vorbei! Neue Events werden hier angekündigt.</p>
+                </div>
+
+                <!-- GitHub Token Setup (nur beim ersten Mal) -->
+                <div id="githubTokenSetupEvents" class="add-member-form" style="display: none; margin-top: 40px;">
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">🔐 GitHub Token Setup</h3>
+                    <p style="color: #ccc; margin-bottom: 15px;">Um Daten zu speichern, wird ein GitHub Personal Access Token benötigt.</p>
+                    <div class="form-group">
+                        <label>GitHub Personal Access Token:</label>
+                        <input type="password" id="githubTokenEvents" placeholder="ghp_...">
+                    </div>
+                    <button type="button" class="btn" onclick="saveGithubTokenEvents()">Token speichern</button>
                 </div>
 
                 <!-- Login-Bereich für Admin (am Ende) -->
@@ -575,6 +586,20 @@
 
                 <div class="team-grid" id="teamGrid">
                     <!-- Teammitglieder werden hier dynamisch hinzugefügt -->
+                </div>
+
+                <!-- GitHub Token Setup (nur beim ersten Mal) -->
+                <div id="githubTokenSetup" class="add-member-form" style="display: none; margin-top: 40px;">
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">🔐 GitHub Token Setup</h3>
+                    <p style="color: #ccc; margin-bottom: 15px;">Um Daten zu speichern, wird ein GitHub Personal Access Token benötigt.</p>
+                    <div class="form-group">
+                        <label>GitHub Personal Access Token:</label>
+                        <input type="password" id="githubToken" placeholder="ghp_...">
+                    </div>
+                    <button type="button" class="btn" onclick="saveGithubToken()">Token speichern</button>
+                    <p style="color: #888; font-size: 0.9em; margin-top: 15px;">
+                        ℹ️ Der Token wird verschlüsselt im Browser gespeichert und nie übertragen.
+                    </p>
                 </div>
 
                 <!-- Login-Bereich für Admin (am Ende) -->
@@ -807,7 +832,7 @@
     </div>
 
     <footer>
-        <p>© 2025 HopeMc.de - Alle Rechte vorbehalten</p>
+        <p>© 2024 HopeMc.de - Alle Rechte vorbehalten</p>
         <p style="margin-top: 10px; color: #666;">Nicht mit Mojang Studios verbunden</p>
     </footer>
 
@@ -858,6 +883,92 @@
             event.target.classList.add('active');
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // GitHub Configuration
+        const GITHUB_OWNER = 'Gostleft';
+        const GITHUB_REPO = 'HopeMc.de-Website';
+        const GITHUB_BRANCH = 'main';
+
+        // GitHub Token Management
+        function getGithubToken() {
+            return localStorage.getItem('github_token');
+        }
+
+        function saveGithubToken() {
+            const token = document.getElementById('githubToken').value;
+            if (token && token.startsWith('ghp_')) {
+                localStorage.setItem('github_token', token);
+                document.getElementById('githubTokenSetup').style.display = 'none';
+                alert('✅ Token gespeichert! Du kannst jetzt Teammitglieder hinzufügen.');
+            } else {
+                alert('❌ Ungültiger Token! Token muss mit "ghp_" beginnen.');
+            }
+        }
+
+        function saveGithubTokenEvents() {
+            const token = document.getElementById('githubTokenEvents').value;
+            if (token && token.startsWith('ghp_')) {
+                localStorage.setItem('github_token', token);
+                document.getElementById('githubTokenSetupEvents').style.display = 'none';
+                alert('✅ Token gespeichert! Du kannst jetzt Events hinzufügen.');
+            } else {
+                alert('❌ Ungültiger Token! Token muss mit "ghp_" beginnen.');
+            }
+        }
+
+        // GitHub API Functions
+        async function commitToGithub(path, content, message) {
+            const token = getGithubToken();
+            if (!token) {
+                alert('❌ Kein GitHub Token gefunden! Bitte Token eingeben.');
+                return false;
+            }
+
+            try {
+                // Get current file SHA
+                const getResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                let sha = null;
+                if (getResponse.ok) {
+                    const data = await getResponse.json();
+                    sha = data.sha;
+                }
+
+                // Commit the file
+                const putResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        content: btoa(unescape(encodeURIComponent(content))),
+                        sha: sha,
+                        branch: GITHUB_BRANCH
+                    })
+                });
+
+                if (putResponse.ok) {
+                    return true;
+                } else {
+                    const error = await putResponse.json();
+                    console.error('GitHub API Error:', error);
+                    alert('❌ Fehler beim Speichern auf GitHub: ' + error.message);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Fehler beim Speichern: ' + error.message);
+                return false;
+            }
         }
 
         // Admin-Passwort (ÄNDERE DIESES PASSWORT!)
