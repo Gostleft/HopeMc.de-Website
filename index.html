@@ -454,6 +454,7 @@
             <button class="nav-btn" onclick="showPage('gamemodes')">🎮 Spielmodi</button>
             <button class="nav-btn" onclick="showPage('events')">🎉 Events</button>
             <button class="nav-btn" onclick="showPage('team')">👥 Team</button>
+            <button class="nav-btn" onclick="showPage('partners')">🤝 Partnerschaft</button>
             <button class="nav-btn" onclick="showPage('about')">📖 Über uns</button>
             <button class="nav-btn" onclick="showPage('contact')">✉️ Kontakt</button>
             <button class="nav-btn" onclick="showPage('discord')">💬 Discord</button>
@@ -581,6 +582,126 @@
 
         <!-- TEAM PAGE -->
         <div id="team" class="page">
+            <div class="section">
+                <h2>👥 Unser Team</h2>
+
+                <div class="team-grid" id="teamGrid">
+                    <!-- Teammitglieder werden hier dynamisch hinzugefügt -->
+                </div>
+
+                <!-- GitHub Token Setup (nur beim ersten Mal) -->
+                <div id="githubTokenSetup" class="add-member-form" style="display: none; margin-top: 40px;">
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">🔐 GitHub Token Setup</h3>
+                    <p style="color: #ccc; margin-bottom: 15px;">Um Daten zu speichern, wird ein GitHub Personal Access Token benötigt.</p>
+                    <div class="form-group">
+                        <label>GitHub Personal Access Token:</label>
+                        <input type="password" id="githubToken" placeholder="ghp_...">
+                    </div>
+                    <button type="button" class="btn" onclick="saveGithubToken()">Token speichern</button>
+                    <p style="color: #888; font-size: 0.9em; margin-top: 15px;">
+                        ℹ️ Der Token wird verschlüsselt im Browser gespeichert und nie übertragen.
+                    </p>
+                </div>
+
+                <!-- Login-Bereich für Admin (am Ende) -->
+                <div id="adminLogin" class="add-member-form" style="margin-top: 40px;">
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">🔒 Admin-Bereich</h3>
+                    <p style="color: #ccc; margin-bottom: 15px;">Nur für Administratoren: Gib das Passwort ein, um Teammitglieder zu verwalten.</p>
+                    <div class="form-group">
+                        <label>Passwort:</label>
+                        <input type="password" id="adminPassword" placeholder="Admin-Passwort eingeben" onkeypress="if(event.key==='Enter') checkAdminPassword()">
+                    </div>
+                    <button type="button" class="btn" onclick="checkAdminPassword()">Einloggen</button>
+                </div>
+            
+                <!-- Teammitglied hinzufügen (versteckt bis Login) -->
+                <div id="adminPanel" class="add-member-form" style="display: none; margin-top: 40px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="color: #8a2be2; margin: 0;">✅ Eingeloggt - Teammitglied hinzufügen</h3>
+                        <button type="button" class="btn" onclick="logoutAdmin()" style="padding: 8px 20px; font-size: 0.9em;">Ausloggen</button>
+                    </div>
+                    <form id="teamForm">
+                        <div class="form-group">
+                            <label>Name / Minecraft Username:</label>
+                            <input type="text" id="memberName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Rolle (z.B. Owner, Admin, Moderator):</label>
+                            <input type="text" id="memberRole" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Beschreibung (optional):</label>
+                            <textarea id="memberDesc" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Teammitglied hinzufügen</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- PARTNERS PAGE -->
+        <div id="partners" class="page">
+            <div class="section">
+                <h2>🤝 Partnerschaften</h2>
+                <p style="font-size: 1.2em; text-align: center; line-height: 1.8; color: #ccc; margin-bottom: 40px;">
+                    Wir arbeiten mit großartigen Servern und Communities zusammen!
+                </p>
+
+                <div class="team-grid" id="partnersGrid">
+                    <!-- Partner werden hier dynamisch hinzugefügt -->
+                </div>
+
+                <div id="noPartners" style="text-align: center; padding: 60px 20px; color: #8a2be2;">
+                    <h3 style="font-size: 2em; margin-bottom: 20px;">🤝 Noch keine Partner</h3>
+                    <p style="font-size: 1.2em; color: #ccc;">Wir sind offen für Partnerschaften! Kontaktiere uns auf Discord.</p>
+                </div>
+
+                <!-- GitHub Token Setup (nur beim ersten Mal) -->
+                <div id="githubTokenSetupPartners" class="add-member-form" style="display: none; margin-top: 40px;">
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">🔐 GitHub Token Setup</h3>
+                    <p style="color: #ccc; margin-bottom: 15px;">Um Daten zu speichern, wird ein GitHub Personal Access Token benötigt.</p>
+                    <div class="form-group">
+                        <label>GitHub Personal Access Token:</label>
+                        <input type="password" id="githubTokenPartners" placeholder="ghp_...">
+                    </div>
+                    <button type="button" class="btn" onclick="saveGithubTokenPartners()">Token speichern</button>
+                </div>
+
+                <!-- Login-Bereich für Admin -->
+                <div id="adminLoginPartners" class="add-member-form" style="margin-top: 40px;">
+                    <h3 style="color: #8a2be2; margin-bottom: 20px;">🔒 Admin-Bereich</h3>
+                    <p style="color: #ccc; margin-bottom: 15px;">Nur für Administratoren: Gib das Passwort ein, um Partner zu verwalten.</p>
+                    <div class="form-group">
+                        <label>Passwort:</label>
+                        <input type="password" id="adminPasswordPartners" placeholder="Admin-Passwort eingeben" onkeypress="if(event.key==='Enter') checkAdminPasswordPartners()">
+                    </div>
+                    <button type="button" class="btn" onclick="checkAdminPasswordPartners()">Einloggen</button>
+                </div>
+            
+                <!-- Partner hinzufügen (versteckt bis Login) -->
+                <div id="adminPanelPartners" class="add-member-form" style="display: none; margin-top: 40px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="color: #8a2be2; margin: 0;">✅ Eingeloggt - Partner hinzufügen</h3>
+                        <button type="button" class="btn" onclick="logoutAdminPartners()" style="padding: 8px 20px; font-size: 0.9em;">Ausloggen</button>
+                    </div>
+                    <form id="partnerForm">
+                        <div class="form-group">
+                            <label>Partner-Name / Server-Name:</label>
+                            <input type="text" id="partnerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Server-IP oder Website:</label>
+                            <input type="text" id="partnerLink" placeholder="z.B. partner.de" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Beschreibung:</label>
+                            <textarea id="partnerDesc" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Partner hinzufügen</button>
+                    </form>
+                </div>
+            </div>
+        </div>
             <div class="section">
                 <h2>👥 Unser Team</h2>
 
@@ -868,6 +989,7 @@
             checkAdminStatus();
             await loadTeamMembers();
             await loadEvents();
+            await loadPartners();
         });
 
         // Seiten-Navigation
@@ -914,6 +1036,18 @@
                 document.getElementById('githubTokenSetupEvents').style.display = 'none';
                 document.getElementById('adminPanelEvents').style.display = 'block';
                 alert('✅ Token gespeichert! Du kannst jetzt Events hinzufügen.');
+            } else {
+                alert('❌ Ungültiger Token! Token muss mit "ghp_" beginnen.');
+            }
+        }
+
+        function saveGithubTokenPartners() {
+            const token = document.getElementById('githubTokenPartners').value;
+            if (token && token.startsWith('ghp_')) {
+                localStorage.setItem('github_token', token);
+                document.getElementById('githubTokenSetupPartners').style.display = 'none';
+                document.getElementById('adminPanelPartners').style.display = 'block';
+                alert('✅ Token gespeichert! Du kannst jetzt Partner hinzufügen.');
             } else {
                 alert('❌ Ungültiger Token! Token muss mit "ghp_" beginnen.');
             }
@@ -977,6 +1111,7 @@
         const ADMIN_PASSWORD = "HopeMc2024";
         let isAdminLoggedIn = false;
         let isAdminLoggedInEvents = false;
+        let isAdminLoggedInPartners = false;
 
         // Admin-Login prüfen (Team)
         function checkAdminPassword() {
@@ -1043,6 +1178,45 @@
             document.getElementById('eventsGrid').innerHTML = '';
             events.forEach(event => addEventToGrid(event, false));
             updateNoEventsMessage();
+        }
+
+        // Admin-Login prüfen (Partners)
+        function checkAdminPasswordPartners() {
+            const password = document.getElementById('adminPasswordPartners').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedInPartners = true;
+                document.getElementById('adminLoginPartners').style.display = 'none';
+                
+                if (!getGithubToken()) {
+                    document.getElementById('githubTokenSetupPartners').style.display = 'block';
+                } else {
+                    document.getElementById('adminPanelPartners').style.display = 'block';
+                }
+                
+                localStorage.setItem('hopemc_admin_logged_in_partners', 'true');
+                alert('✅ Erfolgreich eingeloggt!');
+                reloadPartnersDisplay();
+            } else {
+                alert('❌ Falsches Passwort!');
+            }
+        }
+
+        // Admin ausloggen (Partners)
+        function logoutAdminPartners() {
+            isAdminLoggedInPartners = false;
+            document.getElementById('adminLoginPartners').style.display = 'block';
+            document.getElementById('adminPanelPartners').style.display = 'none';
+            document.getElementById('githubTokenSetupPartners').style.display = 'none';
+            localStorage.removeItem('hopemc_admin_logged_in_partners');
+            document.getElementById('adminPasswordPartners').value = '';
+            reloadPartnersDisplay();
+        }
+
+        // Partners-Anzeige neu laden
+        function reloadPartnersDisplay() {
+            document.getElementById('partnersGrid').innerHTML = '';
+            partners.forEach(partner => addPartnerToGrid(partner, false));
+            updateNoPartnersMessage();
         }
 
         // Beim Laden prüfen ob Admin eingeloggt ist
